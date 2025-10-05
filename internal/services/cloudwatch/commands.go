@@ -1,9 +1,9 @@
 package cloudwatch
 
 import (
-	"cirrus/internal"
 	"bytes"
 	"context"
+	"fmt"
 	"log"
 	"os/exec"
 	"strings"
@@ -63,8 +63,8 @@ func (m Model) loadLambdaLogGroups() tea.Cmd {
 				context.TODO(),
 				&cloudwatchlogs.DescribeLogGroupsInput{
 					LogGroupNamePattern: aws.String(
-						"/aws/lambda/dev-cot*-st",
-					), // ← Optional: keeps it Lambda-specific
+						fmt.Sprintf("/aws/lambda/dev-cot*-%s", m.env),
+					),
 					Limit:     aws.Int32(50),
 					NextToken: nextToken,
 				},
@@ -76,32 +76,35 @@ func (m Model) loadLambdaLogGroups() tea.Cmd {
 			log.Printf("result %d", len(result.LogGroups))
 
 			// Check tags for each log group
-			for _, group := range result.LogGroups {
-				if group.LogGroupArn == nil {
-					continue
-				}
+			/*
+				for _, group := range result.LogGroups {
+					if group.LogGroupArn == nil {
+						continue
+					}
 
-				tagsResult, err := m.client.ListTagsForResource(
-					context.TODO(),
-					&cloudwatchlogs.ListTagsForResourceInput{
-						ResourceArn: group.LogGroupArn,
-					},
-				)
-				if err != nil {
+					tagsResult, err := m.client.ListTagsForResource(
+						context.TODO(),
+						&cloudwatchlogs.ListTagsForResourceInput{
+							ResourceArn: group.LogGroupArn,
+						},
+					)
+					if err != nil {
 
-					log.Printf("%s", err)
-					continue
-				}
+						log.Printf("%s", err)
+						continue
+					}
 
-				log.Printf("group %s", *group.Arn)
+					log.Printf("group %s", *group.Arn)
 
-				// Check if group has matching tag
-				if tagValue, ok := tagsResult.Tags[internal.AWSTagKey]; ok {
-					if tagValue == internal.AWSTagValue {
-						filteredGroups = append(filteredGroups, group)
+					// Check if group has matching tag
+					if tagValue, ok := tagsResult.Tags[internal.AWSTagKey]; ok {
+						if tagValue == internal.AWSTagValue {
+							filteredGroups = append(filteredGroups, group)
+						}
 					}
 				}
-			}
+			*/
+			filteredGroups = append(filteredGroups, result.LogGroups...)
 
 			if result.NextToken == nil {
 				break

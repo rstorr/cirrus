@@ -38,11 +38,11 @@ type Model struct {
 }
 
 // NewModel creates a new root model
-func NewModel(dynamoClient *dynamodb.Client, logsClient *cloudwatchlogs.Client) Model {
+func NewModel(dynamoClient *dynamodb.Client, logsClient *cloudwatchlogs.Client, env string) Model {
 	return Model{
 		currentService:  ServiceMenu,
-		dynamoDBModel:   dynamo.NewModel(dynamoClient),
-		cloudWatchModel: cloudwatch.NewModel(logsClient),
+		dynamoDBModel:   dynamo.NewModel(dynamoClient, env),
+		cloudWatchModel: cloudwatch.NewModel(logsClient, env),
 	}
 }
 

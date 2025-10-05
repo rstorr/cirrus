@@ -30,6 +30,9 @@ type Model struct {
 	logEvents    []types.FilteredLogEvent
 	allLogsText  string
 
+	// AWS
+	env string
+
 	// UI
 	viewport viewport.Model
 	ready    bool
@@ -44,7 +47,7 @@ type Model struct {
 	filteredView bool
 }
 
-func NewModel(client *cloudwatchlogs.Client) Model {
+func NewModel(client *cloudwatchlogs.Client, env string) Model {
 
 	rgInput := textinput.New()
 	rgInput.Placeholder = "ripgrep pattern (e.g., ERROR|WARN)"
@@ -65,6 +68,7 @@ func NewModel(client *cloudwatchlogs.Client) Model {
 		spinner:      sp,
 		viewport:     vp, // ← Add initialized viewport
 		ripgrepInput: rgInput,
+		env:          env,
 	}
 }
 

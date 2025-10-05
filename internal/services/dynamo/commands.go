@@ -42,7 +42,7 @@ func (m Model) loadTables() tea.Cmd {
 
 		var filteredTables []string
 		for _, table := range result.TableNames {
-			if strings.HasPrefix(table, "dev-cot") {
+			if strings.HasPrefix(table, "dev-cot") && strings.HasSuffix(table, m.env) {
 				filteredTables = append(filteredTables, table)
 			}
 		}

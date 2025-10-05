@@ -85,7 +85,7 @@ func (m Model) renderError() string {
 func (m Model) renderLogGroupList() string {
 	var b strings.Builder
 
-	b.WriteString(titleStyle.Render("📝 Lambda Log Groups (Last 10 minutes)"))
+	b.WriteString(titleStyle.Render("Lambda Log Groups (Last 10 minutes)"))
 	b.WriteString("\n\n")
 
 	if len(m.logGroups) == 0 {
@@ -133,7 +133,7 @@ func (m Model) renderLogStream() string {
 	}
 
 	b.WriteString("\n")
-	help := "↑/↓: Scroll • 1-9: Switch Lambda • r: Refresh • Esc: Back to List"
+	help := "↑/↓: Scroll • 1-9: Switch Lambda • r: Refresh • /: Ripgrep • Esc: Back to List"
 	b.WriteString(helpStyle.Render(help))
 
 	return b.String()

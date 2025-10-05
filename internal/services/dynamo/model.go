@@ -30,6 +30,9 @@ type Model struct {
 	state         viewState
 	previousState viewState
 
+	// Env
+	env string
+
 	// Data
 	tables        []string
 	selectedTable string
@@ -59,7 +62,7 @@ type TableKeySchema struct {
 }
 
 // NewModel creates a new DynamoDB model
-func NewModel(client *dynamodb.Client) Model {
+func NewModel(client *dynamodb.Client, env string) Model {
 	cfg, err := config.LoadConfig()
 	if err != nil {
 		// If config fails to load, create a new one
@@ -71,6 +74,7 @@ func NewModel(client *dynamodb.Client) Model {
 		config:    cfg,
 		state:     stateTableList,
 		tableKeys: make(map[string]TableKeySchema),
+		env:       env,
 	}
 }
 
