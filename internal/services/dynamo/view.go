@@ -59,7 +59,7 @@ func (m Model) renderLoading() string {
 func (m Model) renderTableList() string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render("📊 DynamoDB Tables"))
+	b.WriteString(styles.TitleStyle.Render("DynamoDB Tables"))
 	b.WriteString("\n\n")
 
 	if len(m.tables) == 0 {
@@ -86,7 +86,7 @@ func (m Model) renderTableList() string {
 func (m Model) renderItemListTable() string {
 	var b strings.Builder
 
-	b.WriteString(styles.TitleStyle.Render(fmt.Sprintf("📊 Items in %s", m.selectedTable)))
+	b.WriteString(styles.TitleStyle.Render(fmt.Sprintf("Items in %s", m.selectedTable)))
 	b.WriteString("\n")
 
 	// Show active filters badge
@@ -115,7 +115,7 @@ func (m Model) renderItemListTable() string {
 
 	help := "↑/↓: Navigate • Enter: View Details • Delete: Delete Item • c: Column Filter • "
 	if len(m.activeFilters) > 0 {
-		help += "f: Edit Filters • c: Clear Filters • "
+		help += "f: Edit Filters "
 	} else {
 		help += "f: Add Filters • "
 	}

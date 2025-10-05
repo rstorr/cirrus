@@ -34,7 +34,6 @@ type Model struct {
 	tables        []string
 	selectedTable string
 	tableKeys     map[string]TableKeySchema
-	selectedItem  map[string]types.AttributeValue
 	items         []map[string]types.AttributeValue
 	allColumns    []string // All available columns
 

@@ -948,3 +948,16 @@ debug 2025/10/05 20:49:53 conds [{Tp == asfd}]
 debug 2025/10/05 20:50:11 conds [{Type == ConsumerAccount}]
 debug 2025/10/05 20:50:39 conds [{Type == ConsumerAccount}]
 debug 2025/10/05 20:52:54 conds [{Type == ConsumerAccount}]
+debug 2025/10/05 21:30:27 cursor 13
+debug 2025/10/05 21:30:29 cursor 21
+debug 2025/10/05 21:31:43 cursor 0
+debug 2025/10/05 21:31:43 cursor map[AcquiredAt:0x400084e2a0 CreatedAt:0x400084e408 Error:0x400084e288 ExpiresAt:0x400084e2b8 LastUpdatedAt:0x400084e348 LockId:0x400084e378 PK:0x400084e3f0 SK:0x400084e3d8 Status:0x400084e330 Type:0x400084e360 TypeLastUpdated:0x400084e318]
+debug 2025/10/05 21:31:46 cursor 14
+debug 2025/10/05 21:31:46 cursor map[AcquiredAt:0x40001a4348 CreatedAt:0x40001a4330 Error:0x40001a42a0 ExpiresAt:0x40001a42b8 LastUpdatedAt:0x40001a4318 LockId:0x40001a42d0 PK:0x40001a43a8 SK:0x40001a4300 Status:0x40001a4378 Type:0x40001a43c0 TypeLastUpdated:0x40001a42e8]
+debug 2025/10/05 21:31:48 cursor 22
+debug 2025/10/05 21:31:48 cursor map[CSVName:0x40001a50c8 CreatedAt:0x40001a50b0 Error:0x40001a5050 Fields:0x40003a43a0 JobID:0x40001a5020 LastUpdatedAt:0x40001a5038 OrderNumbers:0x40004895f8 PK:0x40001a5080 SK:0x40001a5068 Status:0x40001a5008 Type:0x40001a5098 TypeLastUpdated:0x40001a50e0]
+debug 2025/10/05 21:31:50 cursor 31
+debug 2025/10/05 21:31:50 cursor map[AcquiredAt:0x40001a5d58 CreatedAt:0x40001a5d40 Error:0x40001a5da0 ExpiresAt:0x40001a5d70 LastUpdatedAt:0x40001a5d10 LockId:0x40001a5cb0 PK:0x40001a5d88 SK:0x40001a5ce0 Status:0x40001a5cf8 Type:0x40001a5d28 TypeLastUpdated:0x40001a5cc8]
+debug 2025/10/05 21:34:55 cursor 10
+debug 2025/10/05 21:34:59 cursor 13
+debug 2025/10/05 21:35:14 conds [{Type == ConsumerAccount}]

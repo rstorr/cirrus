@@ -4,6 +4,7 @@ import (
 	"cirrus/internal/app/nav"
 	"cirrus/internal/messages"
 	"cirrus/internal/services/dynamo/filter"
+	"log"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -175,8 +176,9 @@ func (m Model) handleItemListInput(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	case "enter":
 		cursor := m.itemTable.Cursor()
+		log.Printf("cursor %d", cursor)
 		if cursor >= 0 && cursor < len(m.items) {
-			m.selectedItem = m.items[cursor]
+			m.selectedIdx = cursor
 			m.state = stateItemDetail
 		}
 		return m, nil
