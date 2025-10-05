@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"log"
 	"os/exec"
 	"strings"
 	"time"
@@ -73,37 +72,6 @@ func (m Model) loadLambdaLogGroups() tea.Cmd {
 				return logGroupsLoadedMsg{err: err}
 			}
 
-			log.Printf("result %d", len(result.LogGroups))
-
-			// Check tags for each log group
-			/*
-				for _, group := range result.LogGroups {
-					if group.LogGroupArn == nil {
-						continue
-					}
-
-					tagsResult, err := m.client.ListTagsForResource(
-						context.TODO(),
-						&cloudwatchlogs.ListTagsForResourceInput{
-							ResourceArn: group.LogGroupArn,
-						},
-					)
-					if err != nil {
-
-						log.Printf("%s", err)
-						continue
-					}
-
-					log.Printf("group %s", *group.Arn)
-
-					// Check if group has matching tag
-					if tagValue, ok := tagsResult.Tags[internal.AWSTagKey]; ok {
-						if tagValue == internal.AWSTagValue {
-							filteredGroups = append(filteredGroups, group)
-						}
-					}
-				}
-			*/
 			filteredGroups = append(filteredGroups, result.LogGroups...)
 
 			if result.NextToken == nil {
@@ -118,22 +86,33 @@ func (m Model) loadLambdaLogGroups() tea.Cmd {
 
 func (m Model) loadLogEvents(logGroupName string) tea.Cmd {
 	return func() tea.Msg {
-		// Get logs from last 10 minutes
 		endTime := time.Now()
-		startTime := endTime.Add(-10 * time.Minute)
+		startTime := endTime.Add(-30 * time.Minute)
 
-		result, err := m.client.FilterLogEvents(
-			context.TODO(),
-			&cloudwatchlogs.FilterLogEventsInput{
-				LogGroupName: aws.String(logGroupName),
-				StartTime:    aws.Int64(startTime.UnixMilli()),
-				EndTime:      aws.Int64(endTime.UnixMilli()),
-				Limit:        aws.Int32(500),
-			},
-		)
-		if err != nil {
-			return logEventsLoadedMsg{err: err}
+		allEvents := []types.FilteredLogEvent{}
+		var nextToken *string
+
+		for {
+			result, err := m.client.FilterLogEvents(
+				context.TODO(),
+				&cloudwatchlogs.FilterLogEventsInput{
+					LogGroupName: aws.String(logGroupName),
+					StartTime:    aws.Int64(startTime.UnixMilli()),
+					EndTime:      aws.Int64(endTime.UnixMilli()),
+					Limit:        aws.Int32(500),
+					NextToken:    nextToken,
+				},
+			)
+			if err != nil {
+				return logEventsLoadedMsg{err: err}
+			}
+			allEvents = append(allEvents, result.Events...)
+
+			if result.NextToken == nil {
+				break
+			}
+			nextToken = result.NextToken
 		}
-		return logEventsLoadedMsg{events: result.Events}
+		return logEventsLoadedMsg{events: allEvents}
 	}
 }

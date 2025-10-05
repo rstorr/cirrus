@@ -85,7 +85,7 @@ func (m Model) renderError() string {
 func (m Model) renderLogGroupList() string {
 	var b strings.Builder
 
-	b.WriteString(titleStyle.Render("Lambda Log Groups (Last 10 minutes)"))
+	b.WriteString(titleStyle.Render("Lambda Log Groups"))
 	b.WriteString("\n\n")
 
 	if len(m.logGroups) == 0 {
@@ -121,12 +121,12 @@ func (m Model) renderLogStream() string {
 	var b strings.Builder
 
 	functionName := strings.TrimPrefix(m.currentGroup, "/aws/lambda/")
-	title := fmt.Sprintf("📋 Logs: %s (Last 10 minutes)", functionName)
+	title := fmt.Sprintf("📋 Logs: %s (Last 30 minutes)", functionName)
 	b.WriteString(titleStyle.Render(title))
 	b.WriteString("\n")
 
 	if len(m.logEvents) == 0 {
-		b.WriteString("No log events in the last 10 minutes\n")
+		b.WriteString("No log events in the last 30 minutes\n")
 	} else {
 		b.WriteString(fmt.Sprintf("Total events: %d\n\n", len(m.logEvents)))
 		b.WriteString(m.viewport.View())
@@ -143,7 +143,7 @@ func (m Model) renderLogs() string {
 	var b strings.Builder
 
 	functionName := strings.TrimPrefix(m.currentGroup, "/aws/lambda/")
-	title := fmt.Sprintf("📋 Logs: %s (Last 10 minutes)", functionName)
+	title := fmt.Sprintf("Logs: %s ", functionName)
 	b.WriteString(titleStyle.Render(title))
 	b.WriteString("\n")
 
