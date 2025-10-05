@@ -1,7 +1,7 @@
 package dynamo
 
 import (
-	"aws_tui/internal/styles"
+	"cirrus/internal/styles"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"

@@ -1,9 +1,9 @@
 package dynamo
 
 import (
-	"aws_tui/internal/app/nav"
-	"aws_tui/internal/messages"
-	"aws_tui/internal/services/dynamo/filter"
+	"cirrus/internal/app/nav"
+	"cirrus/internal/messages"
+	"cirrus/internal/services/dynamo/filter"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

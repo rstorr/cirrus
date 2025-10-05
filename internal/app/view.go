@@ -1,8 +1,8 @@
 package app
 
 import (
-	"aws_tui/internal/messages"
-	"aws_tui/internal/styles"
+	"cirrus/internal/messages"
+	"cirrus/internal/styles"
 
 	"github.com/charmbracelet/lipgloss"
 )

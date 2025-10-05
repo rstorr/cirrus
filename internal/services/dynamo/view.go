@@ -1,7 +1,7 @@
 package dynamo
 
 import (
-	"aws_tui/internal/styles"
+	"cirrus/internal/styles"
 	"fmt"
 	"sort"
 	"strings"

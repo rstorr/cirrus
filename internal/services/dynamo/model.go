@@ -1,8 +1,8 @@
 package dynamo
 
 import (
-	"aws_tui/internal/config"
-	"aws_tui/internal/services/dynamo/filter"
+	"cirrus/internal/config"
+	"cirrus/internal/services/dynamo/filter"
 
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"

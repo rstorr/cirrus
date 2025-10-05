@@ -1,7 +1,7 @@
 package config
 
 import (
-	"aws_tui/internal/services/dynamo/filter"
+	"cirrus/internal/services/dynamo/filter"
 	"encoding/json"
 	"log"
 	"os"

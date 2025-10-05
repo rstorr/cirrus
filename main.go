@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aws_tui/internal/app"
+	"cirrus/internal/app"
 	"context"
 	"fmt"
 	"log"

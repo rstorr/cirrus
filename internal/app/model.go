@@ -1,9 +1,9 @@
 package app
 
 import (
-	"aws_tui/internal/messages"
-	"aws_tui/internal/services/cloudwatch"
-	"aws_tui/internal/services/dynamo"
+	"cirrus/internal/messages"
+	"cirrus/internal/services/cloudwatch"
+	"cirrus/internal/services/dynamo"
 
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"

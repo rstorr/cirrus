@@ -1,8 +1,8 @@
 package app
 
 import (
-	"aws_tui/internal/app/nav"
-	"aws_tui/internal/messages"
+	"cirrus/internal/app/nav"
+	"cirrus/internal/messages"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"

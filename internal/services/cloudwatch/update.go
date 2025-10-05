@@ -1,7 +1,7 @@
 package cloudwatch
 
 import (
-	"aws_tui/internal/app/nav"
+	"cirrus/internal/app/nav"
 
 	tea "github.com/charmbracelet/bubbletea"
 )

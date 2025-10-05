@@ -1,7 +1,7 @@
 package cloudwatch
 
 import (
-	"aws_tui/internal"
+	"cirrus/internal"
 	"bytes"
 	"context"
 	"log"
