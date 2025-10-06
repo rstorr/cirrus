@@ -10,14 +10,10 @@ import (
 )
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-
+	log.Printf("State: %v, Msg type: %T, loadingForDelete: %v\n", m.state, msg, m.loadingForDelete)
 	// Handle column filter state separately
 	if m.state == stateColumnFilter {
 		return m.updateColumnFilter(msg)
-	}
-
-	if m.state == stateItemFilter {
-		return m.updateItemFilter(msg)
 	}
 
 	switch msg := msg.(type) {
@@ -34,10 +30,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tablesLoadedMsg:
 		return m.handleTablesLoaded(msg)
 
+	case deleteCompleteMsg:
+
+		m.state = stateTableList
+		return m, func() tea.Msg {
+			return messages.ToastMsg{
+				Message: "items deleted",
+				Level:   messages.ToastSuccess,
+			}
+		}
+
 	case tableKeysLoadedMsg:
 		return m.handleTableKeysLoaded(msg)
 
 	case itemsLoadedMsg:
+		// Ignore if we're already in delete confirm or deleting
+		if m.state == stateDeleteConfirm || m.state == stateDeleting {
+			return m, nil
+		}
 		return m.handleItemsLoaded(msg)
 
 	case ColumnFilterSavedMsg:
@@ -96,6 +106,14 @@ func (m Model) handleKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		return m.handleItemListInput(msg)
 	}
 
+	if m.state == stateDeleteConfirm {
+		return m.updateDeleteConfirm(msg)
+	}
+
+	if m.state == stateItemFilter {
+		return m.updateItemFilter(msg)
+	}
+
 	switch msg.String() {
 	case "q":
 		if m.state != stateTableList {
@@ -114,13 +132,6 @@ func (m Model) handleKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	case "enter":
 		return m.handleEnter()
-
-	case "d", "delete":
-		if m.state == stateItemDetail {
-			m.state = stateConfirmDelete
-		}
-		return m, nil
-
 	case "r":
 		return m.handleRefresh()
 
@@ -130,20 +141,22 @@ func (m Model) handleKeyPress(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		}
 		return m, nil
 
+	case "e":
+		// Empty table - load all items first
+		if len(m.tables) > 0 {
+			m.selectedTable = m.tables[m.selectedIdx]
+			m.loadingForDelete = true // Set flag
+			m.state = stateLoading
+
+			return m, tea.Batch(
+				m.loadTableKeys(m.selectedTable),
+				m.loadItems(nil),
+			)
+		}
+
 	case "down", "j":
 		return m.handleDown()
 
-	case "y":
-		if m.state == stateConfirmDelete {
-			return m.confirmDelete()
-		}
-		return m, nil
-
-	case "n":
-		if m.state == stateConfirmDelete {
-			m.state = stateItemDetail
-		}
-		return m, nil
 	}
 
 	return m, nil
@@ -205,7 +218,7 @@ func (m Model) handleBack() (tea.Model, tea.Cmd) {
 		m.selectedIdx = 0
 		return m, nil
 
-	case stateConfirmDelete:
+	case stateDeleteConfirm:
 		m.state = stateItemDetail
 		return m, nil
 
@@ -222,7 +235,22 @@ func (m Model) handleItemsLoaded(msg itemsLoadedMsg) (tea.Model, tea.Cmd) {
 		m.err = msg.err
 		m.state = stateTableList
 	} else {
+
 		m.items = msg.items
+		// Check if we were loading for deletion
+		if m.loadingForDelete {
+			m.loadingForDelete = false // Reset flag
+
+			if len(m.items) == 0 {
+				m.state = stateTableList
+				return m, messages.ShowToast("Table is already empty", messages.ToastInfo)
+			}
+
+			m.confirmInput = newDeleteConfirmInput()
+			m.state = stateDeleteConfirm
+			return m, nil
+		}
+
 		m.selectedIdx = 0
 		m.state = stateItemList
 
@@ -269,9 +297,6 @@ func (m Model) handleEnter() (tea.Model, tea.Cmd) {
 			m.state = stateLoading
 			return m, m.loadTableKeys(m.selectedTable)
 		}
-
-	case stateConfirmDelete:
-		return m.confirmDelete()
 	}
 
 	return m, nil
@@ -287,15 +312,6 @@ func (m Model) handleDown() (tea.Model, tea.Cmd) {
 		if m.selectedIdx < len(m.items)-1 {
 			m.selectedIdx++
 		}
-	}
-	return m, nil
-}
-
-func (m Model) confirmDelete() (tea.Model, tea.Cmd) {
-	if len(m.items) > 0 && m.selectedIdx < len(m.items) {
-		m.state = stateLoading
-		m.previousState = stateItemList
-		return m, m.deleteItem(m.selectedTable, m.items[m.selectedIdx])
 	}
 	return m, nil
 }

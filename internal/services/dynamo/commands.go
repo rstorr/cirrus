@@ -136,25 +136,3 @@ func buildFilterExpression(
 	filterExpr := strings.Join(expressions, " AND ")
 	return filterExpr, exprAttrNames, exprAttrValues
 }
-
-func (m Model) deleteItem(tableName string, item map[string]types.AttributeValue) tea.Cmd {
-	return func() tea.Msg {
-		keySchema := m.tableKeys[tableName]
-		key := make(map[string]types.AttributeValue)
-
-		if val, ok := item[keySchema.PartitionKey]; ok {
-			key[keySchema.PartitionKey] = val
-		}
-		if keySchema.SortKey != "" {
-			if val, ok := item[keySchema.SortKey]; ok {
-				key[keySchema.SortKey] = val
-			}
-		}
-
-		_, err := m.client.DeleteItem(context.TODO(), &dynamodb.DeleteItemInput{
-			TableName: aws.String(tableName),
-			Key:       key,
-		})
-		return itemDeletedMsg{err: err}
-	}
-}

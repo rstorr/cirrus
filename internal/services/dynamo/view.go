@@ -30,6 +30,10 @@ func (m Model) View() string {
 		content = m.columnFilter.View()
 	case stateItemFilter:
 		content = m.itemFilter.View()
+	case stateDeleteConfirm:
+		return m.renderDeleteConfirm()
+	case stateDeleting:
+		return m.renderDeleting()
 	}
 	return content
 }
@@ -77,7 +81,9 @@ func (m Model) renderTableList() string {
 
 	b.WriteString("\n")
 	b.WriteString(
-		styles.HelpStyle.Render("↑/↓: Navigate • Enter: Select • r: Refresh • q: Back to Menu"),
+		styles.HelpStyle.Render(
+			"↑/↓: Navigate • Enter: Select • r: Refresh • e: Empty Table • q: Back to Menu",
+		),
 	)
 
 	return b.String()
@@ -261,4 +267,73 @@ func formatAttributeValueDetailed(av types.AttributeValue, indent int) string {
 	default:
 		return fmt.Sprintf("%sunknown type", prefix)
 	}
+}
+
+func (m Model) renderDeleteConfirm() string {
+	var b strings.Builder
+
+	warningStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("196")).
+		Padding(1, 0)
+
+	b.WriteString(warningStyle.Render("⚠️  EMPTY TABLE"))
+	b.WriteString("\n\n")
+
+	infoStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
+
+	b.WriteString(
+		infoStyle.Render(fmt.Sprintf("You are about to delete ALL %d items from:", len(m.items))),
+	)
+	b.WriteString("\n\n")
+
+	tableStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("12"))
+
+	b.WriteString(tableStyle.Render(m.selectedTable))
+	b.WriteString("\n\n")
+
+	b.WriteString(warningStyle.Render("THIS ACTION CANNOT BE UNDONE!"))
+	b.WriteString("\n\n")
+
+	b.WriteString(infoStyle.Render("Type the table name to confirm:"))
+	b.WriteString("\n\n")
+	b.WriteString(m.confirmInput.View())
+	b.WriteString("\n\n")
+
+	keyBindStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("205")).
+		Bold(true)
+
+	b.WriteString(keyBindStyle.Render("Enter"))
+	b.WriteString(infoStyle.Render(": Confirm deletion • "))
+
+	b.WriteString(keyBindStyle.Render("Esc"))
+	b.WriteString(infoStyle.Render(": Cancel"))
+
+	return b.String()
+}
+
+func (m Model) renderDeleting() string {
+	var b strings.Builder
+
+	titleStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("12")).
+		Padding(1, 0)
+
+	b.WriteString(titleStyle.Render("🗑️  Deleting Items..."))
+	b.WriteString("\n\n")
+
+	infoStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("241"))
+
+	b.WriteString(
+		infoStyle.Render(fmt.Sprintf("Deleting %d items from %s", m.deleteTotal, m.selectedTable)),
+	)
+	b.WriteString("\n\n")
+
+	b.WriteString("⏳ Please wait...")
+
+	return b.String()
 }

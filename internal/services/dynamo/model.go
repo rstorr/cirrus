@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/charmbracelet/bubbles/table"
+	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -17,10 +18,11 @@ const (
 	stateTableList viewState = iota
 	stateItemList
 	stateItemDetail
-	stateConfirmDelete
 	stateLoading
 	stateColumnFilter
 	stateItemFilter
+	stateDeleteConfirm
+	stateDeleting
 )
 
 // Model represents the DynamoDB child model
@@ -49,6 +51,11 @@ type Model struct {
 	columnFilter ColumnFilterModel
 	selectedIdx  int
 	err          error
+
+	// Delete tracking
+	confirmInput     textinput.Model
+	deleteTotal      int
+	loadingForDelete bool
 
 	// Dimensions
 	Width  int
